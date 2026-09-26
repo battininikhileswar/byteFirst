@@ -25,6 +25,8 @@ export default function StudentForm({
   onChange,
   onPhotoUpload,
   onPhotoRemove,
+  onLogoUpload,
+  onLogoRemove,
   onLoadSample,
   onReset
 }) {
@@ -205,6 +207,59 @@ export default function StudentForm({
               {errors.collegeName && (
                 <span className="field-error-text">{errors.collegeName}</span>
               )}
+            </div>
+
+            {/* College Logo / Watermark Upload */}
+            <div className="form-group full-width">
+              <div className="flex items-center justify-between mb-1">
+                <label className="form-label text-xs font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+                  <GraduationCap size={14} className="text-blue-600" />
+                  <span>College Logo / Watermark Emblem</span>
+                </label>
+                {formData.logoUrl && (
+                  <button
+                    type="button"
+                    onClick={onLogoRemove}
+                    className="text-[11px] text-rose-500 hover:text-rose-600 font-medium flex items-center gap-1 cursor-pointer"
+                  >
+                    <Trash2 size={12} />
+                    <span>Remove Logo</span>
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-3 p-2.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
+                {formData.logoUrl ? (
+                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 dark:border-slate-700 flex items-center justify-center p-1 shrink-0 overflow-hidden shadow-2xs">
+                    <img src={formData.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <Upload size={18} />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-200 truncate">
+                    {formData.logoUrl ? 'Custom logo uploaded' : 'Upload college seal / watermark logo'}
+                  </p>
+                  <p className="text-[10px] text-slate-400">PNG, SVG, or JPG (Send to Back for watermark)</p>
+                </div>
+                <label className="btn btn-secondary btn-xs cursor-pointer shrink-0">
+                  <span>{formData.logoUrl ? 'Change' : 'Upload Logo'}</span>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, image/svg+xml, image/webp"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file && onLogoUpload) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => onLogoUpload(ev.target.result);
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
             </div>
 
             {/* Full Name */}

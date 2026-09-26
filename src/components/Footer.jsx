@@ -22,7 +22,7 @@ export default function Footer() {
                 <CreditCard size={20} />
               </div>
               <span className="brand-text">
-                Digital<span className="brand-accent">ID</span>
+                Aunty<span className="brand-accent">ID</span>
               </span>
             </div>
             <p className="footer-tagline">
@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="footer-bottom-bar">
           <div className="footer-copy">
-            <span>© {new Date().getFullYear()} DigitalID Systems Inc. All rights reserved. • Trusted by Academic Institutions</span>
+            <span>© {new Date().getFullYear()} AuntyID Systems Inc. All rights reserved. • Trusted by Academic Institutions</span>
           </div>
 
           <div className="footer-stack-info">

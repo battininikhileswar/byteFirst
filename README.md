@@ -1,9 +1,8 @@
-# DigitalID — Digital College ID Card Generator 🎓
+# AuntyID — Smart Digital Student ID Card Platform 🎓
 
-A modern, production-grade React web application for generating, customizing, and downloading professional digital college ID cards with real-time dynamic preview.
+A modern, production-grade React web application and AI assistant for generating, customizing, and downloading professional digital college ID cards with real-time dynamic preview.
 
-Built for the **React Hackathon** strictly adhering to the challenge specification:
-> *"Develop a React interface where users enter personal and academic details and instantly generate a professional digital college ID card preview."*
+**AuntyID**: *"Your friendly AI-powered digital identity assistant."*
 
 ---
 

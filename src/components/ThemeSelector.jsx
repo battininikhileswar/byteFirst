@@ -11,7 +11,7 @@ export default function ThemeSelector({
   onToggleFlip
 }) {
   return (
-    <div className="theme-selector-card">
+    <div className="theme-selector-card w-full min-w-0">
       <div className="selector-section">
         <div className="selector-title">
           <Palette size={16} />

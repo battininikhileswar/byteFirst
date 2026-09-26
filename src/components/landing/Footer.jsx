@@ -24,11 +24,11 @@ export default function LandingFooter() {
               <CreditCard size={20} className="logo-svg" />
             </div>
             <span className="landing-brand-name">
-              Digital<span className="brand-dot">ID</span>
+              Aunty<span className="brand-dot">ID</span>
             </span>
           </Link>
           <p className="footer-lead-tagline">
-            Digital identity, simplified.
+            AuntyID — Smart digital identity for students.
           </p>
           <p className="footer-sub-description">
             Empowering modern students and institutions with beautiful, verifiable digital credentials.
@@ -69,7 +69,7 @@ export default function LandingFooter() {
       {/* Bottom Copyright Bar */}
       <div className="landing-container footer-bottom-row">
         <div className="footer-copyright-text">
-          <span>© 2026 DigitalID. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} AuntyID. All rights reserved.</span>
         </div>
         <div className="footer-bottom-badge">
           <span>Designed for modern academic identity</span>

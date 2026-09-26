@@ -4,8 +4,7 @@ import { toPng } from 'html-to-image';
  * Downloads the Digital ID Card as a high-resolution PNG image in its natural,
  * flat, un-mirrored orientation.
  *
- * Uses an isolated export clone with export-safe styles, ensuring zero 3D rotation,
- * zero horizontal flipping, zero outside shadows, and perfect dimensions.
+ * Strips away any selection rings, resize handles, floating toolbars, and alignment guides.
  *
  * @param {HTMLElement} element - The DOM element of the ID card or its front face
  * @param {string} fileName - The desired download filename
@@ -17,28 +16,32 @@ export const downloadCardAsImage = async (element, fileName = 'student-id-card.p
   }
 
   // Identify the canonical front card element (single source of truth)
-  const target = element.id === 'downloadable-id-card' || element.classList.contains('id-card-front')
+  const target = element.id === 'downloadable-id-card'
     ? element
-    : (element.querySelector('#downloadable-id-card, .id-card-front') || element);
+    : (element.querySelector('#downloadable-id-card') || element);
 
-  const isHorizontal = target.classList.contains('face-horizontal') ||
+  const isHorizontal = target.style.width === '600px' ||
+    target.classList.contains('face-horizontal') ||
     target.classList.contains('horizontal') ||
-    (target.closest && target.closest('.horizontal') !== null);
+    (target.closest && target.closest('.orientation-horizontal') !== null);
 
   // Exact standard dimensions matching design ratio
-  const cardWidth = isHorizontal ? 520 : 320;
-  const cardHeight = isHorizontal ? 330 : 520;
+  const cardWidth = isHorizontal ? 600 : 380;
+  const cardHeight = isHorizontal ? 380 : 600;
 
   // Create temporary export clone
   const exportClone = target.cloneNode(true);
 
-  if (isHorizontal) {
-    exportClone.classList.add('face-horizontal');
-    exportClone.classList.add('horizontal');
-  }
-
   // Strip away any 3D back-face elements that might have been cloned
-  exportClone.querySelectorAll('.id-card-back').forEach((el) => el.remove());
+  exportClone.querySelectorAll('.id-card-back, .rotate-y-180').forEach((el) => el.remove());
+
+  // Strip away selection outlines, resize handles, toolbars, and alignment guides
+  exportClone.querySelectorAll('[class*="ring-2"], [class*="ring-1"]').forEach((el) => {
+    el.className = el.className.replace(/ring-[^\s]+/g, '').replace(/shadow-[^\s]+/g, '');
+  });
+  exportClone.querySelectorAll('[class*="cursor-nwse-resize"], [class*="cursor-nesw-resize"]').forEach((el) => el.remove());
+  exportClone.querySelectorAll('[class*="z-\\[100\\]"]').forEach((el) => el.remove());
+  exportClone.querySelectorAll('[class*="pointer-events-none absolute inset-0"]').forEach((el) => el.remove());
 
   // Apply dedicated export-safe class
   exportClone.classList.add('id-card-export');

@@ -28,7 +28,7 @@ export default function SecuritySection() {
             <span className="section-eyebrow">VERIFICATION & TRUST</span>
             <h2 className="security-headline">Identity that can be verified.</h2>
             <p className="security-main-paragraph">
-              Every DigitalID can contain a unique verification code, making identity information easier to validate.
+              Every AuntyID can contain a unique verification code, making identity information easier to validate.
             </p>
 
             <div className="security-points-stack">
@@ -62,7 +62,7 @@ export default function SecuritySection() {
               {/* Central Stylized QR Frame */}
               <div className="scanner-qr-plate">
                 <QRCodeSVG
-                  value="https://digitalid.app/verify/DID-2026-AUTHENTIC"
+                  value="https://auntyid.app/verify/AID-2026-AUTHENTIC"
                   size={180}
                   level="Q"
                   bgColor="#ffffff"

@@ -22,7 +22,7 @@ export default function DigitalIDShowcase() {
   const normalizedY = ((Math.round(rotY) % 360) + 360) % 360;
   const isBackSide = (normalizedY > 90 && normalizedY < 270) || (Math.abs(Math.round(rotY / 180)) % 2 !== 0);
 
-  // 1. Subtle, slow automatic 3D oscillation (gentle organic breathing, readable at all times)
+  // 1. Continuous smooth 360-degree auto-rotation (~10s per full 360 deg cycle)
   useEffect(() => {
     if (!isAutoRotating || isDragging || isSettling) return;
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -33,12 +33,9 @@ export default function DigitalIDShowcase() {
     const loop = (now) => {
       const delta = (now - lastTime) / 1000;
       lastTime = now;
-      autoTimeRef.current += delta;
 
-      // Slow, elegant oscillation (approx 8.5 deg left-center-right sway)
-      const oscY = Math.sin(autoTimeRef.current * 0.85) * 8.5;
-      const oscX = Math.cos(autoTimeRef.current * 0.65) * 3;
-      setOsc({ x: oscX, y: oscY });
+      // 36 deg/s = 360 deg every 10 seconds (slow, elegant, readable)
+      setRotY((prev) => (prev + delta * 36) % 360);
 
       animId = requestAnimationFrame(loop);
     };
@@ -46,6 +43,19 @@ export default function DigitalIDShowcase() {
     animId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animId);
   }, [isAutoRotating, isDragging, isSettling]);
+
+  // Global / Agent listener for auto-rotation control
+  useEffect(() => {
+    const handleToggle = (e) => {
+      if (typeof e.detail?.enabled === 'boolean') {
+        setIsAutoRotating(e.detail.enabled);
+      } else {
+        setIsAutoRotating((prev) => !prev);
+      }
+    };
+    window.addEventListener('digitalid:toggle-auto-rotate', handleToggle);
+    return () => window.removeEventListener('digitalid:toggle-auto-rotate', handleToggle);
+  }, []);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -196,13 +206,13 @@ export default function DigitalIDShowcase() {
     setIsAutoRotating((prev) => !prev);
   };
 
-  // Combine rot + dynamic hover/oscillation
-  const effectiveRotY = rotY + (isDragging || isSettling ? 0 : isHovered ? hoverTilt.y : (isAutoRotating ? osc.y : 0));
-  const effectiveRotX = rotX + (isDragging || isSettling ? 0 : isHovered ? hoverTilt.x : (isAutoRotating ? osc.x : 0));
+  // Combine rot + dynamic hover
+  const effectiveRotY = rotY + (isDragging || isSettling ? 0 : isHovered ? hoverTilt.y : 0);
+  const effectiveRotX = rotX + (isDragging || isSettling ? 0 : isHovered ? hoverTilt.x : 0);
 
   // Multi-layered depth parallax for floating peripheral elements
-  const currentTiltY = isHovered ? hoverTilt.y : (isAutoRotating ? osc.y : 0);
-  const currentTiltX = isHovered ? hoverTilt.x : (isAutoRotating ? osc.x : 0);
+  const currentTiltY = isHovered ? hoverTilt.y : 0;
+  const currentTiltX = isHovered ? hoverTilt.x : 0;
   const badge1Parallax = `translate3d(${currentTiltY * 1.2}px, ${-currentTiltX * 1.2}px, 0)`;
   const badge2Parallax = `translate3d(${-currentTiltY * 0.9}px, ${currentTiltX * 0.9}px, 0)`;
   const badge3Parallax = `translate3d(${currentTiltY * 0.7}px, ${currentTiltX * 0.7}px, 0)`;
@@ -219,7 +229,7 @@ export default function DigitalIDShowcase() {
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         role="region"
-        aria-label="Interactive 3D Digital ID Card Preview. Drag to rotate in 3D, click to flip front and back."
+        aria-label="Interactive 3D AuntyID Card Preview. Drag to rotate in 3D, click to flip front and back."
       >
         {/* Subtle Ambient Sky Lighting with organic breath */}
         <div className="showcase-stage-ambient"></div>
@@ -281,13 +291,13 @@ export default function DigitalIDShowcase() {
             className={`showcase-card-3d-flipper ${isDragging ? 'is-dragging' : ''} ${isSettling ? 'is-settling' : ''}`}
             style={{
               transform: `perspective(1200px) rotateY(${effectiveRotY}deg) rotateX(${effectiveRotX}deg)`,
-              transition: isDragging
+              transition: (isDragging || isAutoRotating)
                 ? 'none'
                 : isSettling
                 ? 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)'
                 : isHovered
                 ? 'transform 0.15s ease-out'
-                : 'transform 0.1s linear'
+                : 'transform 0.2s ease-out'
             }}
           >
             {/* Dynamic Light Sheen Overlay */}
@@ -503,10 +513,10 @@ export default function DigitalIDShowcase() {
           type="button"
           className="ctrl-pill-btn"
           onClick={toggleAutoRotate}
-          title={isAutoRotating ? 'Pause auto-rotation' : 'Resume auto-rotation'}
+          title={isAutoRotating ? 'Turn off auto-rotation' : 'Turn on auto-rotation'}
         >
           {isAutoRotating ? <Pause size={13} /> : <Play size={13} />}
-          <span>{isAutoRotating ? 'Auto-Rotate ON' : 'Auto-Rotate PAUSED'}</span>
+          <span>{isAutoRotating ? 'Auto-Rotate ON' : 'Auto-Rotate OFF'}</span>
         </button>
       </div>
 

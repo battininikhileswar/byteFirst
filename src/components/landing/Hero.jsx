@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronRight, Shield, Sparkles, CheckCircle2 } from 'lucide-react';
 import DigitalIDShowcase from './DigitalIDShowcase';
+import { HangingIdCard } from '../lightswind/hanging-id-card';
+import { useAgent } from '../../context/AgentContext';
 
 export default function LandingHero() {
   const navigate = useNavigate();
-  const [glowOffset, setGlowOffset] = React.useState({ x: 0, y: 0 });
+  const { openAgent } = useAgent();
+  const [glowOffset, setGlowOffset] = useState({ x: 0, y: 0 });
+  const [showcaseMode, setShowcaseMode] = useState('hanging'); // 'hanging' | '3d'
 
   const handlePointerMove = (e) => {
     if (window.matchMedia('(max-width: 768px)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -40,16 +44,16 @@ export default function LandingHero() {
         <div className="hero-text-block">
           <div className="hero-announcement-pill">
             <span className="pill-dot"></span>
-            <span className="pill-text">The New Standard in Academic Credentials</span>
+            <span className="pill-text">Smart Student Identity • Powered by AuntyID</span>
           </div>
 
           <h1 className="hero-headline">
-            Your Identity. <br />
-            <span className="headline-gradient">Digitally Reimagined.</span>
+            Your ID. <br />
+            <span className="headline-gradient">Sorted by Aunty.</span>
           </h1>
 
           <p className="hero-lead-text">
-            Create a professional digital college identity in seconds — designed for the modern student.
+            Create, customize, download and manage your digital college ID with the help of AuntyID — your friendly AI identity assistant.
           </p>
 
           <div className="hero-action-buttons">
@@ -58,18 +62,19 @@ export default function LandingHero() {
               className="hero-primary-btn"
               onClick={() => navigate('/create')}
             >
-              <span>Create Your Digital ID</span>
+              <span>Create Your ID</span>
               <ArrowRight size={18} />
             </button>
 
-            <a
-              href="#features"
-              onClick={scrollToFeatures}
+            <button
+              type="button"
               className="hero-secondary-btn"
+              onClick={openAgent}
+              title="Open AuntyID AI Assistant"
             >
-              <span>Explore Features</span>
-              <ChevronRight size={17} />
-            </a>
+              <Sparkles size={17} style={{ color: '#0284c7' }} />
+              <span>Ask AuntyID</span>
+            </button>
           </div>
 
           {/* Quick value signals */}
@@ -89,9 +94,51 @@ export default function LandingHero() {
           </div>
         </div>
 
-        {/* Right Column: 3D Digital ID Showcase */}
+        {/* Right Column: Interactive ID Showcase */}
         <div className="hero-showcase-block">
-          <DigitalIDShowcase />
+          <div className="hero-showcase-container">
+            {/* Mode Switcher Tabs */}
+            <div className="hero-showcase-switcher" role="tablist" aria-label="ID Showcase Modes">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={showcaseMode === 'hanging'}
+                className={`showcase-toggle-pill ${showcaseMode === 'hanging' ? 'active' : ''}`}
+                onClick={() => setShowcaseMode('hanging')}
+              >
+                <span>🪢 Hanging Lanyard</span>
+                <span className="pill-badge">Physics</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={showcaseMode === '3d'}
+                className={`showcase-toggle-pill ${showcaseMode === '3d' ? 'active' : ''}`}
+                onClick={() => setShowcaseMode('3d')}
+              >
+                <span>🔄 3D Hologram</span>
+                <span className="pill-badge">360°</span>
+              </button>
+            </div>
+
+            {/* Showcase Stage */}
+            <div className="showcase-content-area">
+              {showcaseMode === 'hanging' ? (
+                <div className="hanging-card-hero-stage">
+                  <HangingIdCard
+                    name="Harshavardhan"
+                    role="CSE • 4th Year"
+                    badgeId="21B91A0582"
+                    accentColor="#0284c7"
+                    ropeLength={115}
+                    ropeColor="#0f172a"
+                  />
+                </div>
+              ) : (
+                <DigitalIDShowcase />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -34,7 +34,7 @@ export default function LandingNavbar() {
             <CreditCard size={20} className="logo-svg" />
           </div>
           <span className="landing-brand-name">
-            Digital<span className="brand-dot">ID</span>
+            Aunty<span className="brand-dot">ID</span>
           </span>
         </Link>
 
@@ -52,6 +52,10 @@ export default function LandingNavbar() {
           <a href="#security" onClick={(e) => scrollToSection(e, '#security')} className="nav-item">
             Security
           </a>
+          <Link to="/editor" className="nav-item flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400">
+            <span>Canvas Studio</span>
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">New</span>
+          </Link>
         </nav>
 
         {/* Right CTA */}
@@ -96,6 +100,10 @@ export default function LandingNavbar() {
             <a href="#security" onClick={(e) => scrollToSection(e, '#security')} className="mobile-link">
               Security
             </a>
+            <Link to="/editor" className="mobile-link font-bold text-blue-600 dark:text-blue-400 flex items-center justify-between">
+              <span>Canvas Studio Designer</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">NEW</span>
+            </Link>
 
             <div className="mobile-theme-row">
               <span className="mobile-theme-label">Theme Mode</span>
